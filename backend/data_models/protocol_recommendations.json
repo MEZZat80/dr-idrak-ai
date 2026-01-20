@@ -1,0 +1,66 @@
+{
+    "title": "protocol_recommendations",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "User ID from auth system"
+        },
+        "profile_id": {
+            "type": "integer",
+            "description": "Reference to user_profiles.id"
+        },
+        "protocol_name": {
+            "type": "string",
+            "description": "Name of recommended protocol"
+        },
+        "core_product": {
+            "type": "string",
+            "description": "Core product name"
+        },
+        "catalyst_product": {
+            "type": "string",
+            "description": "Catalyst product name"
+        },
+        "foundation_product": {
+            "type": "string",
+            "description": "Foundation product name (optional)"
+        },
+        "confidence_level": {
+            "type": "string",
+            "description": "Confidence level: high, moderate, low"
+        },
+        "risk_level": {
+            "type": "string",
+            "description": "Risk assessment level"
+        },
+        "warnings": {
+            "type": "string",
+            "description": "JSON array of safety warnings"
+        },
+        "eligibility": {
+            "type": "string",
+            "description": "Eligibility status: standard, modified, premium_required"
+        },
+        "mechanistic_basis": {
+            "type": "string",
+            "description": "Scientific mechanism explanation"
+        },
+        "created_at": {
+            "type": "string",
+            "description": "Recommendation creation timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "protocol_name",
+        "confidence_level",
+        "eligibility",
+        "created_at"
+    ]
+}

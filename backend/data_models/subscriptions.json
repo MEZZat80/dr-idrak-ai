@@ -1,0 +1,50 @@
+{
+    "title": "subscriptions",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "User ID from auth system"
+        },
+        "protocol_id": {
+            "type": "integer",
+            "description": "Reference to protocol_recommendations.id"
+        },
+        "subscription_type": {
+            "type": "string",
+            "description": "Type: monthly or premium"
+        },
+        "status": {
+            "type": "string",
+            "description": "Status: active, paused, cancelled"
+        },
+        "start_date": {
+            "type": "string",
+            "description": "Subscription start date"
+        },
+        "next_delivery_date": {
+            "type": "string",
+            "description": "Next scheduled delivery"
+        },
+        "created_at": {
+            "type": "string",
+            "description": "Subscription creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "description": "Last update timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "subscription_type",
+        "status",
+        "start_date",
+        "created_at"
+    ]
+}

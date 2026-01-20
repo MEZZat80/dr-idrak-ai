@@ -1,0 +1,42 @@
+{
+    "title": "chat_history",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "User ID from auth system"
+        },
+        "session_id": {
+            "type": "string",
+            "description": "Chat session identifier"
+        },
+        "role": {
+            "type": "string",
+            "description": "Message role: user or assistant"
+        },
+        "content": {
+            "type": "string",
+            "description": "Message content"
+        },
+        "intake_step": {
+            "type": "string",
+            "description": "Current intake step when message was sent"
+        },
+        "created_at": {
+            "type": "string",
+            "description": "Message timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "session_id",
+        "role",
+        "content",
+        "created_at"
+    ]
+}

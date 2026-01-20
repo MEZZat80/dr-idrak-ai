@@ -1,0 +1,53 @@
+{
+    "title": "user_profiles",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "User ID from auth system"
+        },
+        "primary_goal": {
+            "type": "string",
+            "description": "Primary wellness goal: focus, stress, sleep, aging, gut, joints, skin"
+        },
+        "medications": {
+            "type": "string",
+            "description": "JSON array of current medications"
+        },
+        "medical_conditions": {
+            "type": "string",
+            "description": "JSON array of medical conditions"
+        },
+        "allergies": {
+            "type": "string",
+            "description": "JSON array of known allergies"
+        },
+        "age_verified": {
+            "type": "boolean",
+            "description": "Whether user confirmed 18+ age"
+        },
+        "language_preference": {
+            "type": "string",
+            "description": "Preferred language: en, ar, es"
+        },
+        "created_at": {
+            "type": "string",
+            "description": "Profile creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "description": "Last update timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "primary_goal",
+        "age_verified",
+        "created_at"
+    ]
+}
