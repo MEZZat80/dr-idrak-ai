@@ -1,0 +1,21 @@
+{
+  "name": "dr-idrak-ai-shopify",
+  "version": "1.0.0",
+  "description": "Dr. Idrak AI - Shopify Theme App Extension",
+  "scripts": {
+    "deploy": "shopify app deploy",
+    "dev": "shopify app dev",
+    "info": "shopify app info"
+  },
+  "keywords": [
+    "shopify",
+    "app-extension",
+    "theme-extension",
+    "dr-idrak-ai"
+  ],
+  "author": "Dr. Idrak AI Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@shopify/cli": "^3.55.0"
+  }
+}

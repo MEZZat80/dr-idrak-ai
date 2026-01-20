@@ -1,0 +1,313 @@
+{% comment %}
+  Dr. Idrak AI - Floating Chat Widget
+  This block creates a floating chat button and iframe for the AI assistant
+{% endcomment %}
+
+<div id="dr-idrak-chat-widget" class="dr-idrak-widget">
+  <!-- Floating Chat Button -->
+  <button 
+    id="dr-idrak-chat-button" 
+    class="dr-idrak-chat-btn"
+    aria-label="Open Dr. Idrak AI Chat"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z" fill="currentColor"/>
+      <path d="M7 9H17V11H7V9ZM7 12H14V14H7V12Z" fill="currentColor"/>
+    </svg>
+    <span class="dr-idrak-badge" id="dr-idrak-notification-badge" style="display: none;">1</span>
+  </button>
+
+  <!-- Chat Iframe Container -->
+  <div id="dr-idrak-chat-container" class="dr-idrak-chat-container" style="display: none;">
+    <div class="dr-idrak-chat-header">
+      <div class="dr-idrak-header-content">
+        <img src="https://public-frontend-cos.metadl.com/mgx/img/favicon-atoms.png" alt="Dr. Idrak AI" class="dr-idrak-logo">
+        <div>
+          <h3>Dr. Idrak AI</h3>
+          <p>مساعدك الطبي الذكي</p>
+        </div>
+      </div>
+      <button id="dr-idrak-close-btn" class="dr-idrak-close-btn" aria-label="Close chat">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <iframe 
+      id="dr-idrak-iframe"
+      src="{{ block.settings.app_url }}"
+      frameborder="0"
+      allow="clipboard-write; microphone"
+      class="dr-idrak-iframe"
+      title="Dr. Idrak AI Chat Interface"
+    ></iframe>
+  </div>
+</div>
+
+<style>
+  .dr-idrak-widget {
+    position: fixed;
+    z-index: 999999;
+  }
+
+  .dr-idrak-chat-btn {
+    position: fixed;
+    bottom: {{ block.settings.button_bottom }}px;
+    right: {{ block.settings.button_right }}px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: {{ block.settings.button_color }};
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000000;
+  }
+
+  .dr-idrak-chat-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .dr-idrak-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .dr-idrak-chat-container {
+    position: fixed;
+    bottom: {{ block.settings.button_bottom | plus: 80 }}px;
+    right: {{ block.settings.button_right }}px;
+    width: {{ block.settings.chat_width }}px;
+    height: {{ block.settings.chat_height }}px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 140px);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dr-idrak-chat-header {
+    background: {{ block.settings.header_color }};
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dr-idrak-header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dr-idrak-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+  }
+
+  .dr-idrak-header-content h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .dr-idrak-header-content p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+
+  .dr-idrak-close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  .dr-idrak-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .dr-idrak-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .dr-idrak-chat-container {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 0;
+    }
+
+    .dr-idrak-chat-btn {
+      bottom: 20px;
+      right: 20px;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const chatButton = document.getElementById('dr-idrak-chat-button');
+    const chatContainer = document.getElementById('dr-idrak-chat-container');
+    const closeButton = document.getElementById('dr-idrak-close-btn');
+    const iframe = document.getElementById('dr-idrak-iframe');
+
+    // Toggle chat visibility
+    function toggleChat() {
+      const isVisible = chatContainer.style.display !== 'none';
+      chatContainer.style.display = isVisible ? 'none' : 'flex';
+      chatButton.style.display = isVisible ? 'flex' : 'none';
+      
+      // Store state in localStorage
+      localStorage.setItem('drIdrakChatOpen', !isVisible);
+    }
+
+    // Open chat
+    chatButton.addEventListener('click', toggleChat);
+    
+    // Close chat
+    closeButton.addEventListener('click', toggleChat);
+
+    // Restore previous state
+    if (localStorage.getItem('drIdrakChatOpen') === 'true') {
+      toggleChat();
+    }
+
+    // Listen for messages from iframe
+    window.addEventListener('message', function(event) {
+      // Verify origin for security
+      if (event.origin !== '{{ block.settings.app_url | split: '/' | slice: 0, 3 | join: '/' }}') {
+        return;
+      }
+
+      // Handle different message types
+      if (event.data.type === 'dr-idrak-notification') {
+        const badge = document.getElementById('dr-idrak-notification-badge');
+        badge.style.display = 'flex';
+        badge.textContent = event.data.count || '1';
+      }
+
+      if (event.data.type === 'dr-idrak-close') {
+        toggleChat();
+      }
+    });
+
+    // Send Shopify customer data to iframe (if available)
+    {% if customer %}
+    iframe.addEventListener('load', function() {
+      iframe.contentWindow.postMessage({
+        type: 'shopify-customer-data',
+        customer: {
+          id: '{{ customer.id }}',
+          email: '{{ customer.email }}',
+          firstName: '{{ customer.first_name }}',
+          lastName: '{{ customer.last_name }}'
+        }
+      }, '{{ block.settings.app_url }}');
+    });
+    {% endif %}
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Dr. Idrak AI Chat",
+  "target": "body",
+  "settings": [
+    {
+      "type": "text",
+      "id": "app_url",
+      "label": "App URL",
+      "default": "https://your-vercel-app.vercel.app",
+      "info": "Enter your Dr. Idrak AI Vercel deployment URL"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#10b981"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header Color",
+      "default": "#059669"
+    },
+    {
+      "type": "range",
+      "id": "button_bottom",
+      "label": "Button Bottom Position (px)",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_right",
+      "label": "Button Right Position (px)",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "chat_width",
+      "label": "Chat Width (px)",
+      "min": 320,
+      "max": 500,
+      "step": 10,
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "chat_height",
+      "label": "Chat Height (px)",
+      "min": 400,
+      "max": 700,
+      "step": 10,
+      "default": 600
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+# Shopify App Configuration for Dr. Idrak AI
+
+name = "dr-idrak-ai"
+client_id = "YOUR_CLIENT_ID_HERE"
+application_url = "https://your-vercel-app.vercel.app"
+embedded = true
+
+[access_scopes]
+# Required scopes for the app
+scopes = "write_themes,read_products"
+
+[auth]
+redirect_urls = [
+  "https://your-vercel-app.vercel.app/auth/callback",
+  "https://your-vercel-app.vercel.app/auth/shopify/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "YOUR_STORE.myshopify.com"
