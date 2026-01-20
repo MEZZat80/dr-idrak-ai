@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Language } from '@/lib/translations';
+import { Language } from '@/api/translations';
 
 interface Message {
   id: string;

@@ -2,8 +2,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, AlertTriangle, Shield } from 'lucide-react';
-import { ProtocolRecommendation } from '@/lib/protocolEngine';
-import { translations, Language } from '@/lib/translations';
+import { ProtocolRecommendation } from '@/api/protocolEngine';
+import { translations, Language } from '@/api/translations';
 
 interface ProtocolDisplayProps {
   recommendation: ProtocolRecommendation;

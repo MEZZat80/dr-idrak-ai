@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Send, Mic, Upload, Loader2 } from 'lucide-react';
-import { generateResponse, analyzeImage } from '@/lib/medgemmaClient';
+import { generateResponse, analyzeImage } from '@/api/medgemmaClient';
 import MessageBubble from './MessageBubble';
 import { useToast } from '@/hooks/use-toast';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { client } from '@/lib/api';
+import { client } from '@/api/api';
 
 interface User {
   id: string;
