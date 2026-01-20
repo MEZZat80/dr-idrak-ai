@@ -1,8 +1,8 @@
 # Shopify App Configuration for Dr. Idrak AI
 
 name = "dr-idrak-ai"
-client_id = "YOUR_CLIENT_ID_HERE"
-application_url = "https://your-vercel-app.vercel.app"
+client_id = "26228cff9f4b710d9a489bdf851f35af"
+application_url = "https://dr-idrak-ai.vercel.app"
 embedded = true
 
 [access_scopes]
@@ -11,8 +11,8 @@ scopes = "write_themes,read_products"
 
 [auth]
 redirect_urls = [
-  "https://your-vercel-app.vercel.app/auth/callback",
-  "https://your-vercel-app.vercel.app/auth/shopify/callback"
+  "https://dr-idrak-ai.vercel.app/auth/callback",
+  "https://dr-idrak-ai.vercel.app/auth/shopify/callback"
 ]
 
 [webhooks]
@@ -23,4 +23,4 @@ embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "YOUR_STORE.myshopify.com"
+dev_store_url = "idrak-pharma.myshopify.com"
