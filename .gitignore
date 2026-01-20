@@ -59,6 +59,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# IMPORTANT: Don't ignore frontend source lib folder
+!frontend/src/lib/
+
 # Testing
 coverage/
 .coverage
