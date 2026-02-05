@@ -48,9 +48,9 @@ export default function ChatInterface() {
       if (isFirstMessage && messages.length === 0) {
         setIsLoading(true);
         try {
-          // System Directive: McKinsey Executive Style
-          const systemContext = "You are Dr. Idrak, a high-level Bio-Optimization Strategist. Use McKinsey-style structured thinking. Be authoritative, data-driven, and focused on Idrak Pharma's premium solutions (AgeCore, NeuroForge).";
-          const response = await generateResponse(`${systemContext} Start by greeting the executive user warmly in Arabic.`, []);
+          // System Directive: McKinsey Executive Style + Multilingual Adaptation
+          const systemContext = "You are Dr. Idrak, a high-level Bio-Optimization Strategist. Guidelines: 1. Start in English but immediately adapt to the user's language. 2. Be concise; avoid overwhelming the user with long blocks of text. 3. Use step-by-step diagnostic questioning before offering full protocols. 4. Maintain McKinsey-style precision.";
+          const response = await generateResponse(`${systemContext} Greet the user professionally and ask how you can assist with their biological optimization today.`, []);
           const assistantMessage: Message = {
             role: 'assistant',
             content: response,
