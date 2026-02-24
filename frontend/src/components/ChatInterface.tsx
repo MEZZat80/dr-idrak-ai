@@ -6,6 +6,7 @@ import { Send, Mic, MicOff, Upload, Loader2 } from 'lucide-react';
 import { generateResponse, analyzeImage } from '@/api/medgemmaClient';
 import MessageBubble from './MessageBubble';
 import MemoryPanel from './MemoryPanel';
+import LearningDashboard from './LearningDashboard';
 import { useToast } from '@/hooks/use-toast';
 import { useVoiceChat } from '@/hooks/useVoiceChat';
 import { 
@@ -15,6 +16,11 @@ import {
   extractHealthInfo,
   generateMemoryContext
 } from '@/api/memorySystem';
+import {
+  initializeLearning,
+  trackRecommendation,
+  learnFromConversation
+} from '@/api/selfLearning';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -38,9 +44,10 @@ export default function ChatInterface() {
     language: 'ar-EG'
   });
 
-  // Initialize memory on mount
+  // Initialize memory and learning on mount
   useEffect(() => {
     initializeMemory(USER_ID);
+    initializeLearning();
   }, []);
 
   const scrollToBottom = () => {
@@ -153,6 +160,18 @@ export default function ChatInterface() {
         products,
         healthInfo.conditions || []
       );
+
+      // Track for learning
+      products.forEach(product => {
+        trackRecommendation(product, {
+          userGoal: extractGoalFromMessage(input.trim()),
+          userConditions: healthInfo.conditions || [],
+          userMedications: healthInfo.medications || []
+        });
+      });
+
+      // Learn from this conversation
+      learnFromConversation(input.trim(), response, null);
     } catch (error: any) {
       console.error('Error generating response:', error);
       toast({
@@ -172,6 +191,17 @@ export default function ChatInterface() {
       'Dermalux', 'FlexiCore', 'InnerGlow Logic', 'Longevity Core', 'NeuroForge'
     ];
     return products.filter(product => response.includes(product));
+  };
+
+  // Helper to extract goal from message
+  const extractGoalFromMessage = (message: string): string => {
+    const lower = message.toLowerCase();
+    if (lower.includes('sleep') || lower.includes('insomnia')) return 'sleep';
+    if (lower.includes('stress') || lower.includes('anxiety')) return 'stress';
+    if (lower.includes('memory') || lower.includes('focus')) return 'cognitive';
+    if (lower.includes('energy') || lower.includes('fatigue')) return 'energy';
+    if (lower.includes('skin') || lower.includes('aging')) return 'anti-aging';
+    return 'general wellness';
   };
 
   const toggleListening = () => {
@@ -281,6 +311,9 @@ export default function ChatInterface() {
 
       {/* Memory Panel */}
       <MemoryPanel userId={USER_ID} />
+
+      {/* Learning Dashboard */}
+      <LearningDashboard />
 
       {/* Input Area */}
       <div className="bg-white border-t border-slate-200 p-4 shadow-lg">

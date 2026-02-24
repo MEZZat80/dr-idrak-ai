@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateLearningContext } from './selfLearning';
 
 // Validate API key on module load
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -45,7 +46,8 @@ function validateApiKey(): void {
  */
 export async function generateResponse(
   userMessage: string,
-  conversationHistory: Message[] = []
+  conversationHistory: Message[] = [],
+  userGoal?: string
 ): Promise<string> {
   try {
     // Validate API key before making request
@@ -92,6 +94,9 @@ export async function generateResponse(
     const historyContext = conversationHistory
       .map(msg => `${msg.role === 'user' ? 'User' : 'Dr. Idrak'}: ${msg.content}`)
       .join('\n');
+
+    // Get learning context
+    const learningContext = userGoal ? generateLearningContext(userGoal) : '';
 
     // COMPREHENSIVE SYSTEM PROMPT - Professional Clinical Guidance with Business Rules
     const systemPrompt = `SYSTEM:
@@ -230,10 +235,14 @@ LANGUAGE RULES:
 - Be conversational but professional.
 - Keep responses concise - avoid lengthy explanations unless specifically requested.
 
+LEARNING CONTEXT:
+${learningContext}
+
 CONVERSATION HISTORY:
 ${historyContext}
 
-USER INPUT: ${userMessage}
+USER INPUT:
+${userMessage}
 
 RESPONSE TASK:
 Generate ONE comprehensive AI response that:
