@@ -5,14 +5,24 @@ import { Card } from '@/components/ui/card';
 import { Send, Mic, MicOff, Upload, Loader2 } from 'lucide-react';
 import { generateResponse, analyzeImage } from '@/api/medgemmaClient';
 import MessageBubble from './MessageBubble';
+import MemoryPanel from './MemoryPanel';
 import { useToast } from '@/hooks/use-toast';
 import { useVoiceChat } from '@/hooks/useVoiceChat';
+import { 
+  initializeMemory, 
+  updateHealthProfile, 
+  addConversationSummary,
+  extractHealthInfo,
+  generateMemoryContext
+} from '@/api/memorySystem';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
 }
+
+const USER_ID = 'current_user'; // In production, this would come from auth
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -27,6 +37,11 @@ export default function ChatInterface() {
     onResult: (text) => setInput(text),
     language: 'ar-EG'
   });
+
+  // Initialize memory on mount
+  useEffect(() => {
+    initializeMemory(USER_ID);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -48,9 +63,18 @@ export default function ChatInterface() {
       if (isFirstMessage && messages.length === 0) {
         setIsLoading(true);
         try {
-          // System Directive: McKinsey Executive Style + Multilingual Adaptation
-          const systemContext = "You are Dr. Idrak, a high-level Bio-Optimization Strategist. Guidelines: 1. Start in English but immediately adapt to the user's language. 2. Be concise; avoid overwhelming the user with long blocks of text. 3. Use step-by-step diagnostic questioning before offering full protocols. 4. Maintain McKinsey-style precision.";
-          const response = await generateResponse(`${systemContext} Greet the user professionally and ask how you can assist with their biological optimization today.`, []);
+          // Check for existing memory
+          const memoryContext = generateMemoryContext(USER_ID);
+          
+          let greetingPrompt = "You are Dr. Idrak, a high-level Bio-Optimization Strategist. Guidelines: 1. Start in English but immediately adapt to the user's language. 2. Be concise; avoid overwhelming the user with long blocks of text. 3. Use step-by-step diagnostic questioning before offering full protocols. 4. Maintain McKinsey-style precision.";
+          
+          if (memoryContext) {
+            greetingPrompt += `\n\nYou have previously interacted with this user. Here is what you remember:\n${memoryContext}\n\nGreet them warmly, acknowledging your previous conversation if relevant.`;
+          } else {
+            greetingPrompt += " Greet the user professionally and ask how you can assist with their biological optimization today.";
+          }
+          
+          const response = await generateResponse(greetingPrompt, []);
           const assistantMessage: Message = {
             role: 'assistant',
             content: response,
@@ -88,15 +112,30 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     try {
+      // Extract health info from user message and update memory
+      const healthInfo = extractHealthInfo(input.trim());
+      if (healthInfo.conditions?.length || healthInfo.medications?.length || healthInfo.allergies?.length) {
+        updateHealthProfile(USER_ID, healthInfo);
+      }
+
       const conversationHistory = [...messages, userMessage].map((msg) => ({
         role: msg.role,
         content: msg.content,
       }));
 
+      // Get memory context
+      const memoryContext = generateMemoryContext(USER_ID);
+
+      // Build enhanced prompt with memory
+      let strategyPrompt = input.trim();
+      if (memoryContext) {
+        strategyPrompt = `[USER CONTEXT:\n${memoryContext}\n\nCURRENT MESSAGE: ${input.trim()}]`;
+      }
+
       // Injected McKinsey Logic for every response
-      const strategyPrompt = `[STRATEGIC DIRECTIVE: Analyze the user's health data with McKinsey precision. Map symptoms to Idrak Pharma products. Include a clear CTA.] ${input.trim()}`;
+      const enhancedPrompt = `[STRATEGIC DIRECTIVE: Analyze the user's health data with McKinsey precision. Map symptoms to Idrak Pharma products. Include a clear CTA.] ${strategyPrompt}`;
       
-      const response = await generateResponse(strategyPrompt, conversationHistory);
+      const response = await generateResponse(enhancedPrompt, conversationHistory);
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -105,6 +144,15 @@ export default function ChatInterface() {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      // Save conversation summary to memory
+      const products = extractProductsFromResponse(response);
+      addConversationSummary(
+        USER_ID,
+        `User asked about: ${input.trim().substring(0, 100)}...`,
+        products,
+        healthInfo.conditions || []
+      );
     } catch (error: any) {
       console.error('Error generating response:', error);
       toast({
@@ -115,6 +163,15 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper to extract products from AI response
+  const extractProductsFromResponse = (response: string): string[] => {
+    const products = [
+      'AgeCore NAD+', 'Neuro-Blue', 'Rest Atlas', 'Zen Mode',
+      'Dermalux', 'FlexiCore', 'InnerGlow Logic', 'Longevity Core', 'NeuroForge'
+    ];
+    return products.filter(product => response.includes(product));
   };
 
   const toggleListening = () => {
@@ -221,6 +278,9 @@ export default function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
       </div>
+
+      {/* Memory Panel */}
+      <MemoryPanel userId={USER_ID} />
 
       {/* Input Area */}
       <div className="bg-white border-t border-slate-200 p-4 shadow-lg">
